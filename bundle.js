@@ -119,11 +119,11 @@
     }
 
     function gatherAttributeFields() {
-        //var startDate = getStartDate();
-        //var verificationDate = getVerificationDate();
-        //var dueDate = getDueDate();
+        var startDate = getStartDate();
+        var verificationDate = getVerificationDate();
+        var dueDate = getDueDate();
         var estimation = getEstimation();
-        //var assignee = getAssignee();
+        var assignee = getAssignee();
 
         var fields = [
             'State ' + getState(),
@@ -205,18 +205,15 @@
     }
     
     function getStartDate() {
-        var input = document.getElementById('date_start-data');
-        return input ? formatDate(input.value) : null;
+        return null;
     }
 
     function getDueDate() {
-        var input = document.getElementById('date_end-data');
-        return input ? formatDate(input.value) : null;
+        return null;
     }
 
     function getVerificationDate() {
-        var input = document.getElementById('verification_date-data');
-        return input ? formatDate(input.value) : null;
+        return null;
     }
 
     function getEstimation() {
