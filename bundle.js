@@ -1,7 +1,8 @@
 (function() {
     var JiraYoutrack = {
-      version: "0.0.3",
+      version: "0.0.5",
       renderUi: renderUi,
+      converter: null,
       token: null
     }
     
@@ -56,6 +57,7 @@
     function renderUi(options) {
         JiraYoutrack.token = options.token;
         JiraYoutrack.fetch = options.fetch;
+        JiraYoutrack.converter = options.converter;
         addStylesheet();
         findButtonPlacement().append(renderButton());
     }
@@ -100,7 +102,7 @@
         var info = {
             project: "WD",
             summary: getSummary(),
-            description: await getDescription(),
+            description: getDescription(),
         };
 
         var params = new URLSearchParams(info);
@@ -168,7 +170,7 @@
         return element ? element.textContent : "Jira issue";
     }
 
-    async function getDescription() {
+    function getDescription() {
         let content = retrieveSpecContent()
         let markdown = convertToMarkdown(content)
         return markdown
@@ -180,13 +182,11 @@
     }
 
     function convertToMarkdown(element) {
-        if (typeof window.TurndownService !== "undefined") {
-            var converter = window.TurndownService()
-            return converter.turndown(element)
+        if (typeof JiraYoutrack.converter !== "undefined") {
+            return JiraYoutrack.converter.turndown(element)
         }
         return element.innerText
     }
-    
 
     function getExternalLinksText() {
         return "Jira Ticket: " + location.href + '\n';
