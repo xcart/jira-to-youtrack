@@ -1,6 +1,6 @@
 (function() {
     var JiraYoutrack = {
-      version: "0.0.5",
+      version: "0.0.6",
       renderUi: renderUi,
       converter: null,
       token: null
