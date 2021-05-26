@@ -81,7 +81,7 @@
     function addStylesheet() {
         var style = document.createElement("style");
         style.innerHTML = stylesheet;
-        document.getElementsByTagName("head")[0].appendChild(s);   
+        document.getElementsByTagName("head")[0].appendChild(style);   
     }
 
     async function onClick(event) {
