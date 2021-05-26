@@ -87,9 +87,9 @@
     async function onClick(event) {
         var info = await gatherInfoObject();
         var href = convertToUrl(info);
-        createClientValue(function (){
-            window.open(href);
-        });
+        window.open(href);
+        //createClientValue(function (){
+        //});
     }
 
     function findButtonPlacement() {
@@ -119,11 +119,11 @@
     }
 
     function gatherAttributeFields() {
-        var startDate = getStartDate();
-        var verificationDate = getVerificationDate();
-        var dueDate = getDueDate();
+        //var startDate = getStartDate();
+        //var verificationDate = getVerificationDate();
+        //var dueDate = getDueDate();
         var estimation = getEstimation();
-        var assignee = getAssignee();
+        //var assignee = getAssignee();
 
         var fields = [
             'State ' + getState(),
@@ -164,55 +164,19 @@
     }
 
     function getSummary() {
-        var regex = /.*?\((.*)\)/;
-        var input = document.querySelector('input[name="description"]');
-        var matches = regex.exec(input.value);
-        return matches && matches.length > 1 ? matches[1] : input.value;
+        var element = document.querySelector('h1[data-test-id="issue.views.issue-base.foundation.summary.heading"]');
+        return element ? element.textContent : "Jira issue";
     }
 
     async function getDescription() {
-        // TODO: Figure out how to provide
-        return ""
-        let content = await retrieveSpecContent(getSpecUrl())
-        let spec = filterConstraints(content)
-        let markdown = convertToMarkdown(spec)
+        let content = retrieveSpecContent()
+        let markdown = convertToMarkdown(content)
         return markdown
     }
 
-    function retrieveSpecContent(url) {
-        return new Promise((resolve, reject) => {
-            if (typeof JiraYoutrack.fetch === 'undefined') {
-                reject(null)
-            }
-            
-            JiraYoutrack.fetch({
-                method: "GET",
-                url: url,
-                onload: function(response) {
-                    let doc = document.createElement('html')
-                    doc.innerHTML = response.responseText
-
-                    let spec = doc.querySelector('table.MessageBorder td:first-child')
-                    resolve(spec)
-                }
-            })
-        })
-    }
-
-    function filterConstraints(element) {
-        var result = document.createElement('div')
-        var currentIndex = 0
-        var current = element.childNodes[currentIndex]
-        const headings = ["H1","H2","H3","H4","H5","H6"]
-        const isConstraintHeading = (elem) => { return elem.textContent.toLowerCase().includes('constraints') && headings.includes(elem.tagName) }
-
-        while (current && !isConstraintHeading(current)) {
-            result.appendChild(current.cloneNode(true))
-            currentIndex++
-            current = element.childNodes[currentIndex]
-        }
-
-        return result
+    function retrieveSpecContent() {
+        var container = document.querySelector('div[data-test-id="issue.views.field.rich-text.description"] div.ak-renderer-document');
+        return container.innerHTML;
     }
 
     function convertToMarkdown(element) {
@@ -223,18 +187,9 @@
         return element.innerText
     }
     
-    function getSpecUrl() {
-        var specLink = document.querySelector('a[href*="area=projects&target=specification&"]');
-        return specLink.href + "&read_only_mode=yes"
-    }
-
-    function getSpecLink() {
-        var specLink = getSpecUrl()
-        return specLink ? "Specification: " + specLink : "";
-    }
 
     function getExternalLinksText() {
-        return "Task: " + location.href + '\n' + getSpecLink();
+        return "Jira Ticket: " + location.href + '\n';
     }
 
     function getRepoText() {
@@ -242,29 +197,11 @@
     }
 
     function getAssignee() {
-        var select = document.getElementById('u_id');
-        var assignee = select.options[select.selectedIndex].text.split(",");
-        return assignee && assignee.length > 1 ? assignee[0] : null;
+        return null;
     }
 
     function getState() {
-        var select = document.getElementById('status');
-        switch (select.value) {
-            case 'W':
-                return 'In Progress';
-            case 'Q':
-                return 'Quality Assurance';
-            case 'E':
-            case 'X':
-                return 'Canceled';
-            case 'V':
-                return 'Waiting';
-            case 'T':
-                return 'Completed';
-            case 'S':
-            default:
-                return 'Scheduled';
-        }
+        return 'Submitted';
     }
     
     function getStartDate() {
@@ -283,15 +220,12 @@
     }
 
     function getEstimation() {
-        var input = document.querySelector('input[name="hours"]');
-        var value = parseInt(input.value);
+        var value = "4";
         return value ? value + 'h' : null;
     }
 
     function getClient() {
-        var element = document.querySelectorAll('.SubjectInfo_Light')[0];
-        // Removing <span class="online_company" title="Online last hour">•</span>
-        return element.innerText.replace("•", "").trim();
+        return "Internal project";
     }
 
     function formatDate(str) {
